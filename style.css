@@ -16,6 +16,10 @@
     font-size: 40px;
     font-weight: 700;
 }
+#reset-button {
+    max-width: 140px;
+    min-width: 100px;
+}
 .form-container {
     padding: 15px;
 }

@@ -2,6 +2,7 @@
 let form = document.getElementById('transaction-form');
 let balanceAmount = document.getElementById('account-balance');
 let transactionLog = document.getElementById('transaction-log');
+let resetBtn = document.getElementById('reset-button');
 
 // Setting a starting balance
 let balance = 0.00;
@@ -10,24 +11,34 @@ let transactionArr = [];
 
 // Changing the form's behavior
 form.onsubmit = (e) => {
-    // Cleaning up form data to be in string format not number
-    let type;
-    if (e.target['transaction-type'].value === "1"){
-        type = "Deposit";
-    } else {
-        type = "Withdraw";
+    // Cases to handle undefined or 0
+    let amount = Number(e.target.amount.value);
+    if (amount > 0 || amount < 0) {
+        let type;
+        if (e.target['transaction-type'].value === "1"){
+            type = "Deposit";
+        } else {
+            type = "Withdraw";
+        }
+    
+        let transaction = {
+            type: type,
+            amount: +e.target.amount.value
+        }
+        handleTransaction(transaction);
+        renderBalance();
+        renderTransactionTable()
     }
+    // Stops redirect which is the default behavior of a form
+    e.preventDefault();
+}
 
-    let transaction = {
-        type: type,
-        amount: +e.target.amount.value
-    }
-    // console.log(transaction);
-    handleTransaction(transaction);
+resetBtn.onclick = () => {
+    balance = 0;
+    transactionNumber = 0;
+    transactionArr = [];
     renderBalance();
     renderTransactionTable()
-
-    e.preventDefault();
 }
 
 function handleTransaction(transaction) {
@@ -48,11 +59,8 @@ function handleTransaction(transaction) {
         balance -= transaction.amount;
     }
 
-
     currentTransaction.postBalance = balance;
     transactionArr.push(currentTransaction);
-    console.log(currentTransaction);
-    console.log(transactionArr);
 }
 
 function renderBalance() {
